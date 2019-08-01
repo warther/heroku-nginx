@@ -1,8 +1,20 @@
-server {
-  listen $PORT default_server;
-
-  location / {
-    root   /usr/share/nginx/html;
-    index  index.html index.htm;
-  }
+server
+	{
+		listen $PORT;
+		server_name myng1.herokuapp.com;
+		
+		if ($http_user_agent ~* (baiduspider|360spider|haosouspider|googlebot|soso|bing|sogou|yahoo|sohu-search|yodao|YoudaoBot|robozilla|msnbot|MJ12bot|NHN|Twiceler)) {
+		return  403;
+		}
+  
+		location / {
+		sub_filter cn.wsj.com myng1.herokuapp.com;
+		sub_filter_once off;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Referer http://cn.wsj.com;
+		proxy_set_header Host cn.wsj.com;
+		proxy_pass http://cn.wsj.com;
+		proxy_set_header Accept-Encoding "";
+		}
 }
